@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -60,6 +62,19 @@ func GenerateReportValueItems(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	var b bytes.Buffer
+	writr := bufio.NewWriter(&b)
+	xlsx.Write(writr)
+	writr.Flush()
+
+	fileContents := b.Bytes()
+	fileSize := strconv.Itoa(len(fileContents))
+
+	c.Writer.Header().Set("Content-Disposition", "attachment; filename=report.xlsx")
+	c.Writer.Header().Set("Content-Type", "application/octet-stream")
+	c.Writer.Header().Set("Content-Length", fileSize)
+
 }
 
 // GenerateReportSales for excel file
@@ -78,4 +93,16 @@ func GenerateReportSales(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	var b bytes.Buffer
+	writr := bufio.NewWriter(&b)
+	xlsx.Write(writr)
+	writr.Flush()
+
+	fileContents := b.Bytes()
+	fileSize := strconv.Itoa(len(fileContents))
+
+	c.Writer.Header().Set("Content-Disposition", "attachment; filename=report.xlsx")
+	c.Writer.Header().Set("Content-Type", "application/octet-stream")
+	c.Writer.Header().Set("Content-Length", fileSize)
 }
